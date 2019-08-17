@@ -1,82 +1,159 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { fetchPopularRepos } from "../utils/api.js";
-// passing props selected, onupdateLang to our LanguagesNav
-function LangaugesNav({ selected, onUpdateLanguage }) {
+import { fetchPopularRepos } from "../utils/api";
+import {
+  FaUser,
+  FaStar,
+  FaCodeBranch,
+  FaExclamationTriangle
+} from "react-icons/fa";
+
+function LanguageNav({ selectedLanguage, onUpdateLanguage }) {
   const languages = ["All", "JavaScript", "Ruby", "Java", "CSS", "Python"];
 
   return (
     <ul className="flex-center">
-      {languages.map(language => (
-        <li key={language}>
-          <button
-            className="btn-clear nav-link"
-            style={language === selected ? { color: "rgb(187, 46, 31)" } : null}
-            onClick={() => onUpdateLanguage(language)}
-          >
-            {language}
-          </button>
-        </li>
-      ))}
+      {languages.map((language, index) => {
+        return (
+          <li key={index}>
+            <button
+              className="btn-clear nav-link"
+              style={language === selectedLanguage ? { color: "red" } : null}
+              onClick={() => onUpdateLanguage(language)}
+            >
+              {language}
+            </button>
+          </li>
+        );
+      })}
     </ul>
+    /* */
   );
 }
-
-LangaugesNav.propTypes = {
-  selected: PropTypes.string.isRequired,
+LanguageNav.propTypes = {
+  selectedLanguage: PropTypes.string.isRequired,
   onUpdateLanguage: PropTypes.func.isRequired
 };
 
-class Popular extends Component {
+function ReposGrid({ repos }) {
+  return (
+    <ul className="grid space-around">
+      {repos.map((repo, index) => {
+        const {
+          name,
+          owner,
+          html_url,
+          stargazers_count,
+          forks_count,
+          open_issues_count
+        } = repo;
+        const { login, avatar_url } = owner;
+
+        return (
+          <li key={html_url} className="repo bg-light">
+            <h4 className="header-lg center-text">{"#" + (index + 1)}</h4>
+            <img
+              className="avatar"
+              src={avatar_url}
+              alt={`Avatar for ${login}`}
+            />
+            <h2 className="center-text">
+              <a className="link" href={html_url}>
+                {login}
+              </a>
+            </h2>
+            <ul className="card-list">
+              <li>
+                <FaUser color="rgb(255, 191, 116)" size={22} />
+                <a href={`https://github.com/${login}`}>{login}</a>
+              </li>
+              <li>
+                <FaStar color="rgb(255, 215, 0)" size={22} />
+                {stargazers_count.toLocaleString()} stars
+              </li>
+              <li>
+                <FaCodeBranch color="rgb(129, 195, 245)" size={22} />
+                {forks_count.toLocaleString()} forks
+              </li>
+              <li>
+                <FaExclamationTriangle color="rgb(241, 138, 147)" size={22} />
+                {open_issues_count.toLocaleString()} open issues
+              </li>
+            </ul>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+ReposGrid.propTypes = {
+  repos: PropTypes.array.isRequired
+};
+export default class Popular extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       selectedLanguage: "All",
-      repos: null,
+      repos: {},
       error: null
     };
+
     this.updateLanguage = this.updateLanguage.bind(this);
-    this.isLoading = this.isLoading.bind(this);
   }
-  // changing selected language
+
   componentDidMount() {
-    this.updateLanguage(this.state.selectLanguage);
+    this.updateLanguage(this.state.selectedLanguage);
   }
+
   updateLanguage(selectedLanguage) {
     this.setState({
       selectedLanguage,
-      repos: null,
       error: null
     });
-    fetchPopularRepos(selectedLanguage)
-      .then(repos => this.setState({ repos, errors: null }))
-      .catch(() => {
-        console.warn("Error fetching repos: ", error);
-        this.setState({
-          error: `there was an error fetching the repositories`
+
+    if (!this.state.repos[selectedLanguage]) {
+      fetchPopularRepos(selectedLanguage)
+        .then(data => {
+          this.setState(({ repos }) => ({
+            repos: {
+              ...repos,
+              [selectedLanguage]: data
+            }
+          }));
+        })
+        .catch(error => {
+          console.warn("Error fetching repos", error);
+
+          this.setState({
+            error: "There is an error fetching repos"
+          });
         });
-      });
+    }
   }
+
   isLoading() {
-    return this.state.repos === null && this.state.error == null;
+    const { selectedLanguage, repos, error } = this.state;
+    return !repos[selectedLanguage] && error === null;
   }
+
   render() {
     const { selectedLanguage, repos, error } = this.state;
     return (
       <React.Fragment>
-        <LangaugesNav
-          selected={selectedLanguage}
+        <LanguageNav
+          selectedLanguage={selectedLanguage}
           onUpdateLanguage={this.updateLanguage}
         />
-        {/* show them loading page if the repos (line 35, 48,52, 61)  and error is falsy (NULL)*/}
-        {this.isLoading() && <p>LOADING</p>}
-        {/* show them error is truthy (NOT NULL) and error message (line 36,49,56) */}
-        {error && <p>{error}</p>}
 
-        {repos && <p>{JSON.stringify(repos, null, 2)}</p>}
+        {this.isLoading() && <p>Loading</p>}
+
+        {error && <p>error</p>}
+
+        {repos[selectedLanguage] && (
+          <ReposGrid repos={repos[selectedLanguage]} />
+        )}
       </React.Fragment>
     );
   }
 }
-
-export default Popular;
