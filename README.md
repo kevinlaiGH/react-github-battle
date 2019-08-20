@@ -1,14 +1,14 @@
 ReactJS application that fetches the most popular GitHub repos and allows users to battle.
 
 Concepts explored:
--Rendering Lists in React
--The "this" Keyword
--Managing State in React
--The Component Lifecycle
--Render Props
--PropTypes
--API Requests in React
--Forms in React
+-Rendering Lists in React<br/>
+-The "this" Keyword<br/>
+-Managing State in React<br/>
+-The Component Lifecycle<br/>
+-Render Props<br/>
+-PropTypes<br/>
+-API Requests in React<br/>
+-Forms in React<br/>
 -Higher-order Components
 
 Reference:
