@@ -1,6 +1,6 @@
 ReactJS application that fetches the most popular GitHub repos and allows users to battle.
 
-Concepts explored:
+Concepts explored:<br/>
 -Rendering Lists in React<br/>
 -The "this" Keyword<br/>
 -Managing State in React<br/>
