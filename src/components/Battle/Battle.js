@@ -6,7 +6,8 @@ import {
   FaTimesCircle
 } from "react-icons/fa";
 import PropTypes from "prop-types";
-import Results from "./Results";
+import Results from "../Results";
+import PlayerInput from "./PlayerInput";
 
 function Instructions() {
   return (
@@ -33,59 +34,6 @@ function Instructions() {
     </div>
   );
 }
-
-class PlayerInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: ""
-    };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-  handleSubmit(event) {
-    event.preventDefault();
-    this.props.onSubmit(this.state.username);
-  }
-  // username is gonna be whatever the user type in the field
-  // this.setState causes a re-render which then updates the VALUE of the input field
-  handleChange(event) {
-    this.setState({
-      username: event.target.value
-    });
-  }
-  render() {
-    return (
-      <form className="column-player" onSubmit={this.handleSubmit}>
-        <label htmlFor="username" className="player-label">
-          {this.props.label}
-        </label>
-        <div className="row player-inputs">
-          <input
-            type="text"
-            id="username"
-            className="input-light"
-            placeholder="github username"
-            value={this.state.username}
-            onChange={this.handleChange}
-          />
-          <button
-            className="btn dark-btn"
-            type="submit"
-            disabled={!this.state.username}
-          >
-            Submit
-          </button>
-        </div>
-      </form>
-    );
-  }
-}
-
-PlayerInput.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired
-};
 
 function PlayerPreview({ username, onReset, label }) {
   return (
@@ -127,16 +75,19 @@ export default class Battle extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
+
   handleSubmit(id, player) {
     this.setState({
       [id]: player
     });
   }
+
   handleReset(id) {
     this.setState({
       [id]: null
     });
   }
+
   render() {
     const { playerOne, playerTwo, battle } = this.state;
 
