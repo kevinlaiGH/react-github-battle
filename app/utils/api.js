@@ -2,30 +2,12 @@ const id = process.env.CLIENT_ID;
 const sec = process.env.CLIENT_SECRET;
 const params = `?client_id=${id}&client_secret=${sec}`;
 
-const toParam = obj => {
-  return Object.keys(obj)
-    .map(o => `${o}=${obj[o]}`)
-    .join("&");
-};
-
 function getErrorMsg(message, username) {
   if (message === "Not Found") {
     return `${username} doesn't exist`;
   }
 
   return message;
-}
-
-export function searchProfiles(
-  query,
-  options = { per_page: 5, client_id: id, client_secret: sec }
-) {
-  return fetch(
-    `https://api.github.com/search/users?q=${query}&${toParam(options)}`
-  )
-    .then(res => res.json())
-    .then(data => data)
-    .catch(err => []);
 }
 
 function getProfile(username) {

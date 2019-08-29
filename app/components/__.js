@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { searchProfiles } from "../../utils/api";
+import { searchProfiles } from "../utils/api";
 
 function noWhiteSpace(value) {
   return value.split(" ").length === 1;
