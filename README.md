@@ -9,7 +9,7 @@ Concepts explored:<br/>
 -PropTypes<br/>
 -API Requests in React<br/>
 -Forms in React<br/>
--Higher-order Components
+-Higher-order Components (42)
 
 Reference:
 
