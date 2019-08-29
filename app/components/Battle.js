@@ -141,14 +141,26 @@ export default class Battle extends React.Component {
     const { playerOne, playerTwo, battle } = this.state;
 
     if (battle === true) {
-      return <Results playerOne={playerOne} playerTwo={playerTwo} />;
+      return (
+        <Results
+          playerOne={playerOne}
+          playerTwo={playerTwo}
+          onReset={() =>
+            this.setState({
+              playerOne: null,
+              playerTwo: null,
+              battle: false
+            })
+          }
+        />
+      );
     }
     return (
       <React.Fragment>
         <Instructions />
         <div className="players-container">
           <h1 className="center-text header-lg">Players</h1>
-          <div classNAME="row space-around">
+          <div className="row space-around">
             {playerOne == null ? (
               <PlayerInput
                 label="Player One"
